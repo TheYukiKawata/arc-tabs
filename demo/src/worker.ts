@@ -2,6 +2,7 @@ import { CHARGED_HEADER, createTabGate, offerBody, parseVoucher, type TabOffer, 
 import { matchPaidRoute } from "./api";
 import { type Env, network } from "./env";
 import { durableVoucherStore } from "./ledger";
+import { pageFile } from "./page";
 import { statsCounter } from "./stats";
 
 export { TabLedger } from "./ledger";
@@ -19,6 +20,9 @@ export default {
 
 async function route(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
   const url = new URL(request.url);
+  const page = pageFile(url.pathname);
+  if (page) return page;
+
   const net = network(env);
   const offer: TabOffer = {
     chainId: net.chainId,
