@@ -13,6 +13,7 @@ A client opens a tab: it deposits USDC into the Tabs contract for one API provid
 
 | | |
 |---|---|
+| Live demo | https://arc-tabs.yukikawata.workers.dev |
 | Tabs contract | [`0xD7457dDE7568D5ddE8E189047fB0386Ca7c5744F`](https://explorer.arc.io/address/0xD7457dDE7568D5ddE8E189047fB0386Ca7c5744F) |
 | Deploy tx | [`0xdc07ee52…d369608`](https://explorer.arc.io/tx/0xdc07ee52675ed64975b27bf1b6f10f642db4f2be1027b5a8296e64139d369608) (block 22893855) |
 | Demo settlement | [`0x53c6b38e…cd7bd5a5a`](https://explorer.arc.io/tx/0x53c6b38e479120627cb4dfea3f92e1ec8508ad3d8034295c6731648cd7bd5a5a): 5 paid calls, about 270 ms each, settled in one `charge()` |
