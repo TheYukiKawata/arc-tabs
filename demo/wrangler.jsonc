@@ -13,10 +13,10 @@
   },
   "migrations": [{ "tag": "v1", "new_sqlite_classes": ["TabLedger", "StatsCounter"] }],
   "vars": {
-    "RPC_URL": "https://rpc.testnet.arc.io",
-    "CHAIN_ID": "5042002",
-    "TABS_CONTRACT": "0x0000000000000000000000000000000000000000",
-    "TABS_DEPLOY_BLOCK": "0",
+    "RPC_URL": "https://rpc.mainnet.arc.io",
+    "CHAIN_ID": "5042",
+    "TABS_CONTRACT": "0xD7457dDE7568D5ddE8E189047fB0386Ca7c5744F",
+    "TABS_DEPLOY_BLOCK": "22893855",
     "PAYEE": "0x8A1B9bE81A54083a5d81d494e605637979157CC4",
     "COLLECT_DELAY_SECONDS": "300"
   }
