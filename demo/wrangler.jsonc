@@ -1,0 +1,23 @@
+{
+  "name": "arc-tabs",
+  "main": "src/worker.ts",
+  "compatibility_date": "2026-09-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "build": { "command": "bun run build:page" },
+  "assets": { "directory": "public", "run_worker_first": ["/v1/*"] },
+  "durable_objects": {
+    "bindings": [
+      { "name": "TAB_LEDGER", "class_name": "TabLedger" },
+      { "name": "STATS", "class_name": "StatsCounter" }
+    ]
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["TabLedger", "StatsCounter"] }],
+  "vars": {
+    "RPC_URL": "https://rpc.testnet.arc.io",
+    "CHAIN_ID": "5042002",
+    "TABS_CONTRACT": "0x0000000000000000000000000000000000000000",
+    "TABS_DEPLOY_BLOCK": "0",
+    "PAYEE": "0x8A1B9bE81A54083a5d81d494e605637979157CC4",
+    "COLLECT_DELAY_SECONDS": "300"
+  }
+}

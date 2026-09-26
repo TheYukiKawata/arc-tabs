@@ -1,0 +1,21 @@
+{
+  "name": "arc-tabs-demo",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:page": "bun build page/app.ts --outdir public --minify --target browser",
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "arc-tabs": "file:../sdk",
+    "viem": "^2.56.9"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20260926.1",
+    "@types/bun": "^1.4.2",
+    "typescript": "^7.0.2",
+    "wrangler": "^4.141.0"
+  }
+}

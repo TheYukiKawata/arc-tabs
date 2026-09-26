@@ -3,3 +3,6 @@ contracts/cache/
 contracts/out/
 contracts/broadcast/
 .env
+demo/public/app.js
+.dev.vars
+demo/.wrangler/

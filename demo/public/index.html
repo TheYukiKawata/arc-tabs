@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Arc Tabs</title>
+    <meta name="description" content="Pay for API calls in USDC on Arc: one deposit, then a signed voucher per call." />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/style.css" />
+    <script type="module" src="/app.js"></script>
+  </head>
+  <body>
+    <header class="page">
+      <p class="eyebrow" id="network-name">Arc · USDC</p>
+      <h1>Arc Tabs</h1>
+      <p class="lead">
+        Pay for API calls in USDC on Arc. Your agent opens a tab with one deposit, then pays each call with a
+        signed voucher. No transaction per call, no API key, no account.
+      </p>
+    </header>
+
+    <main class="page">
+      <section class="demo" aria-labelledby="try-heading">
+        <h2 id="try-heading">Try it</h2>
+
+        <ol class="steps">
+          <li class="step" data-step="wallet">
+            <div class="step-head">
+              <h3>Connect a wallet</h3>
+              <button type="button" id="connect">Connect</button>
+            </div>
+            <p class="step-body" id="wallet-status">The demo needs a browser wallet on Arc with about 0.02 USDC.</p>
+          </li>
+
+          <li class="step" data-step="tab">
+            <div class="step-head">
+              <h3>Open a tab</h3>
+              <button type="button" id="open-tab" disabled>Deposit 0.01 USDC</button>
+            </div>
+            <p class="step-body" id="tab-status">
+              You confirm one transaction. It puts 0.01 USDC in the tab for one hour. The rest comes back to you.
+            </p>
+          </li>
+
+          <li class="step" data-step="call">
+            <div class="step-head">
+              <h3>Call the paid API</h3>
+            </div>
+            <p class="step-body">Each call costs 0.0001 USDC. A key in this page signs the voucher, so no wallet popup.</p>
+            <form id="call-form" class="call-form">
+              <label for="address-input">Arc address to look up</label>
+              <div class="call-row">
+                <input id="address-input" name="address" autocomplete="off" spellcheck="false" placeholder="0x…" />
+                <button type="submit" id="call-balance" disabled>Get balance</button>
+                <button type="button" id="call-fees" disabled>Get fees</button>
+              </div>
+            </form>
+            <pre class="response" id="response" aria-live="polite">No calls yet.</pre>
+          </li>
+        </ol>
+
+        <dl class="ledger" id="ledger" hidden>
+          <div><dt>Deposit, USDC</dt><dd id="ledger-deposit">0</dd></div>
+          <div><dt>Signed, USDC</dt><dd id="ledger-signed">0</dd></div>
+          <div><dt>Calls</dt><dd id="ledger-calls">0</dd></div>
+          <div><dt>Expires</dt><dd id="ledger-expires">-</dd></div>
+        </dl>
+        <button type="button" id="reclaim" class="quiet" hidden>Reclaim unused USDC</button>
+      </section>
+
+      <section aria-labelledby="how-heading">
+        <h2 id="how-heading">How it works</h2>
+        <ol class="how">
+          <li>The agent calls the API. The API answers <code>402</code> with its price and the Tabs contract address.</li>
+          <li>The agent deposits native USDC into a tab for that API. Arc confirms it in under a second, final.</li>
+          <li>Each later call carries a voucher: the running total, signed by the agent. The API checks the signature and serves the call.</li>
+          <li>The API sends the latest voucher to the contract when it likes. Anyone can submit it, and the USDC always goes to the API's payee. After expiry, the agent takes back what it did not spend.</li>
+        </ol>
+      </section>
+
+      <section aria-labelledby="code-heading">
+        <h2 id="code-heading">Use it from code</h2>
+        <p>Agent side:</p>
+        <pre class="code"><code>const agent = createTabPayer({
+  client, wallet, signer: sessionKey,
+  maxPrice: parseUsdc("0.001"),
+  deposit: parseUsdc("0.05"),
+  lifetimeSeconds: 3600,
+});
+const response = await agent.fetch("https://api.example/v1/data");</code></pre>
+        <p>API side:</p>
+        <pre class="code"><code>const gate = createTabGate({ client, offer, store });
+return gate.serve(request, async ({ charged }) =&gt; Response.json(await lookup()));</code></pre>
+        <p>A failed call is not charged: the gate stores the voucher only when your handler answers with a 2xx status.</p>
+      </section>
+
+      <section aria-labelledby="live-heading">
+        <h2 id="live-heading">Live numbers</h2>
+        <dl class="ledger" id="stats">
+          <div><dt>Paid calls</dt><dd id="stats-calls">-</dd></div>
+          <div><dt>USDC charged</dt><dd id="stats-charged">-</dd></div>
+          <div><dt>Tabs</dt><dd id="stats-tabs">-</dd></div>
+        </dl>
+        <p class="contract">Tabs contract: <a id="contract-link" href="#">-</a></p>
+      </section>
+    </main>
+
+    <footer class="page">
+      <p>
+        Built by Yuki Kawata. Source on <a id="source-link" href="https://github.com/">GitHub</a>. MIT license.
+      </p>
+    </footer>
+  </body>
+</html>

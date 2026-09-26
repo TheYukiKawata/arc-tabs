@@ -1,0 +1,281 @@
+:root {
+  color-scheme: light dark;
+  --bg: #f5f3ee;
+  --surface: #ece9e1;
+  --ink: #1c2027;
+  --muted: #545b66;
+  --accent: #1f5fc4;
+  --accent-ink: #f7f9fd;
+  --ring: #1f5fc4;
+  --line: #d8d3c7;
+  --ok: #1d6b45;
+  --error: #a32a22;
+  --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #15181d;
+    --surface: #1d2128;
+    --ink: #e9e7e2;
+    --muted: #a6acb5;
+    --accent: #6ea2f5;
+    --accent-ink: #0f1a2c;
+    --ring: #8db7f8;
+    --line: #2c323b;
+    --ok: #6fcf9b;
+    --error: #f08a80;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 400 16px/1.4 var(--sans);
+}
+
+.page {
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+header.page {
+  padding-top: 64px;
+  padding-bottom: 32px;
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+h1 {
+  margin: 0 0 16px;
+  font-size: 44px;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+}
+
+h2 {
+  margin: 0 0 16px;
+  font-size: 24px;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  font-weight: 600;
+}
+
+h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.lead {
+  margin: 0;
+  font-size: 18px;
+  color: var(--muted);
+  max-width: 38rem;
+}
+
+section {
+  padding: 32px 0;
+}
+
+.demo {
+  margin: 0 -16px;
+  padding: 32px 16px;
+  background: var(--surface);
+  border-radius: 16px;
+}
+
+.steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 32px;
+  counter-reset: step;
+}
+
+.step {
+  counter-increment: step;
+  display: grid;
+  gap: 8px;
+}
+
+.step-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 44px;
+}
+
+.step-head h3::before {
+  content: counter(step) ". ";
+  color: var(--muted);
+}
+
+.step-body {
+  margin: 0;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+
+.step-body[data-state="ok"] {
+  color: var(--ok);
+}
+
+.step-body[data-state="error"],
+.response[data-state="error"] {
+  color: var(--error);
+}
+
+button {
+  min-width: 96px;
+  min-height: 44px;
+  padding: 8px 16px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font: 600 16px/1.4 var(--sans);
+  cursor: pointer;
+  transition: transform 120ms ease-out, opacity 120ms ease-out;
+}
+
+button:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+button.quiet {
+  margin-top: 16px;
+  background: transparent;
+  color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+button:focus-visible,
+input:focus-visible,
+a:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--ring);
+}
+
+.call-form {
+  display: grid;
+  gap: 8px;
+}
+
+.call-form label {
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.call-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.call-row input {
+  flex: 1 1 16rem;
+  min-width: 0;
+  min-height: 44px;
+  padding: 8px 16px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--ink);
+  font: 400 15px/1.4 var(--mono);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+.response,
+.code {
+  margin: 0;
+  padding: 16px;
+  border-radius: 8px;
+  background: var(--bg);
+  font: 400 14px/1.4 var(--mono);
+  overflow-x: auto;
+}
+
+.response {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.code {
+  background: var(--surface);
+  white-space: pre;
+}
+
+.ledger {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+  gap: 16px;
+  margin: 32px 0 0;
+}
+
+.ledger dt {
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.ledger dd {
+  margin: 4px 0 0;
+  font: 600 20px/1.4 var(--mono);
+  font-variant-numeric: tabular-nums;
+}
+
+#stats {
+  margin-top: 0;
+}
+
+.how {
+  margin: 0;
+  padding-left: 24px;
+  display: grid;
+  gap: 8px;
+  max-width: 40rem;
+}
+
+code {
+  font-family: var(--mono);
+  font-size: 0.92em;
+}
+
+a {
+  color: var(--accent);
+  border-radius: 2px;
+}
+
+.contract {
+  overflow-wrap: anywhere;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+footer.page {
+  padding-top: 32px;
+  padding-bottom: 64px;
+  color: var(--muted);
+  font-size: 14px;
+}
