@@ -1,7 +1,7 @@
 export { createTabCollector, type TabCollectorOptions } from "./collector";
-export { createTabGate, type Acceptance, type TabGateOptions } from "./gate";
+export { createTabGate, type Payment, type TabGateOptions } from "./gate";
 export { tabsAbi, tabsBytecode } from "./generated";
-export { OFFER_SCHEME, offerResponse, parseOffer, type OfferBody, type TabOffer } from "./offer";
+export { OFFER_SCHEME, offerBody, offerResponse, parseOffer, type OfferBody, type TabOffer } from "./offer";
 export { createTabPayer, OfferRefusedError, type PayerTab, type TabPayerOptions } from "./payer";
 export { createMemoryVoucherStore, type VoucherStore } from "./store";
 export { readTab, type OnchainTab } from "./tab";
@@ -13,6 +13,8 @@ export {
   tabsDomain,
   type TabsDeployment,
   type Voucher,
+  CHARGED_HEADER,
+  TOTAL_HEADER,
   VOUCHER_HEADER,
   voucherTypes,
 } from "./voucher";

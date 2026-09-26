@@ -19,8 +19,8 @@ export type OfferBody = {
   reason: string;
 };
 
-export function offerResponse(offer: TabOffer, reason: string): Response {
-  const body: OfferBody = {
+export function offerBody(offer: TabOffer, reason: string): OfferBody {
+  return {
     scheme: OFFER_SCHEME,
     chainId: offer.chainId,
     contract: offer.contract,
@@ -29,7 +29,10 @@ export function offerResponse(offer: TabOffer, reason: string): Response {
     minRemainingSeconds: offer.minRemainingSeconds,
     reason,
   };
-  return Response.json(body, { status: 402 });
+}
+
+export function offerResponse(offer: TabOffer, reason: string): Response {
+  return Response.json(offerBody(offer, reason), { status: 402 });
 }
 
 export function parseOffer(body: unknown): TabOffer | undefined {

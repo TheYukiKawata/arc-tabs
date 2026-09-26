@@ -12,6 +12,8 @@ export type Voucher = {
 };
 
 export const VOUCHER_HEADER = "Payment-Tab";
+export const TOTAL_HEADER = "Payment-Tab-Total";
+export const CHARGED_HEADER = "Payment-Tab-Charged";
 
 export const voucherTypes = {
   Voucher: [

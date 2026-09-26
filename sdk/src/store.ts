@@ -12,7 +12,7 @@ export function createMemoryVoucherStore(): VoucherStore {
       return vouchers.get(tabId);
     },
     async replace(expected, next) {
-      if (vouchers.get(next.tabId) !== expected) return false;
+      if (vouchers.get(next.tabId)?.total !== expected?.total) return false;
       vouchers.set(next.tabId, next);
       return true;
     },

@@ -11,7 +11,7 @@ import {
 import { tabsAbi } from "./generated";
 import { parseOffer, type TabOffer } from "./offer";
 import { unixNow } from "./tab";
-import { formatVoucher, signVoucher, VOUCHER_HEADER } from "./voucher";
+import { formatVoucher, signVoucher, TOTAL_HEADER, VOUCHER_HEADER } from "./voucher";
 
 export type TabPayerOptions = {
   client: PublicClient;
@@ -20,6 +20,7 @@ export type TabPayerOptions = {
   maxPrice: bigint;
   deposit: bigint;
   lifetimeSeconds: number;
+  initialTabs?: PayerTab[];
   fetch?: (input: string | URL, init?: RequestInit) => Promise<Response>;
 };
 
@@ -38,8 +39,8 @@ export class OfferRefusedError extends Error {}
 export function createTabPayer(options: TabPayerOptions) {
   const { client, wallet, signer, maxPrice, deposit, lifetimeSeconds } = options;
   const send = options.fetch ?? fetch;
+  const tabsByPayee = new Map((options.initialTabs ?? []).map((tab) => [tabKey(tab.offer), tab]));
   const offersByOrigin = new Map<string, TabOffer>();
-  const tabsByPayee = new Map<string, PayerTab>();
   const queues = new Map<string, Promise<unknown>>();
 
   function assertAcceptable(offer: TabOffer) {
@@ -109,8 +110,7 @@ export function createTabPayer(options: TabPayerOptions) {
     headers.set(VOUCHER_HEADER, formatVoucher(voucher));
 
     const response = await send(input, { ...init, headers });
-    const voucherAccepted = response.status !== 402 && response.status !== 409;
-    if (voucherAccepted) tab.total = total;
+    if (response.headers.get(TOTAL_HEADER) === total.toString()) tab.total = total;
     return response;
   }
 
@@ -141,7 +141,12 @@ export function createTabPayer(options: TabPayerOptions) {
     return hash;
   }
 
-  return { fetch: paidFetch, tabs: () => [...tabsByPayee.values()], reclaim };
+  async function prepareTab(offer: TabOffer): Promise<PayerTab> {
+    assertAcceptable(offer);
+    return serialized(offer, () => readyTab(offer));
+  }
+
+  return { fetch: paidFetch, prepareTab, tabs: () => [...tabsByPayee.values()], reclaim };
 }
 
 function tabKey(offer: TabOffer): string {

@@ -24,7 +24,7 @@ beforeAll(async () => {
 
 afterAll(() => chain.stop());
 
-function startPaidApi(price = PRICE) {
+function startPaidApi(price = PRICE, failingCalls = 0) {
   const arc = localArc(chain.url);
   const client = createPublicClient({ chain: arc, transport: http() });
   const store = createMemoryVoucherStore();
@@ -38,10 +38,11 @@ function startPaidApi(price = PRICE) {
   const gate = createTabGate({ client, offer, store });
   const server = Bun.serve({
     port: 0,
-    async fetch(request) {
-      const acceptance = await gate.accept(request);
-      if (!acceptance.ok) return acceptance.response;
-      return Response.json({ charged: acceptance.charged.toString(), total: acceptance.voucher.total.toString() });
+    fetch(request) {
+      return gate.serve(request, async ({ voucher, charged }) => {
+        if (failingCalls-- > 0) return Response.json({ reason: "upstream down" }, { status: 502 });
+        return Response.json({ charged: charged.toString(), total: voucher.total.toString() });
+      });
     },
   });
   const wallet = createWalletClient({ chain: arc, transport: http(), account: chain.payee });
@@ -102,6 +103,19 @@ describe("paid API over a tab", () => {
 
     const [tab] = agent.tabs();
     expect(tab?.deposit).toBe(parseUsdc("0.02"));
+    api.stop();
+  });
+
+  test("a failed call is not charged", async () => {
+    const api = startPaidApi(PRICE, 1);
+    const agent = createAgent();
+
+    expect((await agent.fetch(api.url)).status).toBe(502);
+    const second = await agent.fetch(api.url);
+
+    expect(second.status).toBe(200);
+    expect(await second.json()).toEqual({ charged: PRICE.toString(), total: PRICE.toString() });
+    expect(agent.tabs()[0]?.total).toBe(PRICE);
     api.stop();
   });
 
